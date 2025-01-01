@@ -47,9 +47,8 @@ env/
 *.sqlite3
 
 # Output files (generated audio, video, and metadata)
-output/
-output/audios/
-output/videos/
+output/audios/*
+output/videos/*
 
 *.json
 
