@@ -50,8 +50,7 @@ env/
 output/
 output/audios/
 output/videos/
-*.mp3
-*.mp4
+
 *.json
 
 # Ignore metadata files
