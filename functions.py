@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from PIL import Image, ImageDraw, ImageFont
+from webdriver_manager.core.os_manager import ChromeType
 
 # Fetching a random quote from ZenQuotes API
 def get_quote():
@@ -183,14 +184,20 @@ def delete_file(file_path):
     return False
 
 
-# Streamlit app functions
+@st.cache_resource
 def init_driver():
+    # Setting Chrome options for headless browser execution
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_options.add_argument("--mute-audio")
+    chrome_options.add_argument("--no-sandbox")  # Needed for some cloud environments
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents shared memory issues
 
-    service = Service(ChromeDriverManager().install())
+    # Dynamically fetch and configure the Chromium driver
+    service = Service(
+        ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+    )
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
