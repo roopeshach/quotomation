@@ -204,3 +204,18 @@ def init_driver():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
 
+
+
+VIDEO_METADATA_FILE = "video_metadata.json"
+
+# Function to load or initialize the video metadata
+def load_video_metadata():
+    if os.path.exists(VIDEO_METADATA_FILE):
+        with open(VIDEO_METADATA_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+# Function to save video metadata to the JSON file
+def save_video_metadata(metadata):
+    with open(VIDEO_METADATA_FILE, "w") as f:
+        json.dump(metadata, f, indent=4)
