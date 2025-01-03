@@ -3,7 +3,9 @@ import streamlit as st
 import os
 import pandas as pd
 from functions import (
-    get_quote, 
+    get_quote,
+    load_video_metadata,
+    save_video_metadata, 
     translate_to_hindi, 
     get_audio_data, 
     save_audio_to_mp3, 
@@ -88,19 +90,6 @@ def generate_audio():
 
 
 
-VIDEO_METADATA_FILE = "video_metadata.json"
-
-# Function to load or initialize the video metadata
-def load_video_metadata():
-    if os.path.exists(VIDEO_METADATA_FILE):
-        with open(VIDEO_METADATA_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-# Function to save video metadata to the JSON file
-def save_video_metadata(metadata):
-    with open(VIDEO_METADATA_FILE, "w") as f:
-        json.dump(metadata, f, indent=4)
 def generate_video():
     today_date = get_today_date()
     st.title("Generate Video with Audio")
@@ -158,6 +147,11 @@ def generate_video():
                 "video_file": selected_video,
                 "date_created": today_date
             }
+
+            # if not output/videos folder, create it
+            if not os.path.exists("output/videos"):
+                os.makedirs("output/videos")
+                
 
             # Define path for final video
             video_path = os.path.join("output", "videos", f"{title}_{today_date}.mp4")
