@@ -18,6 +18,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from PIL import Image, ImageDraw, ImageFont
 from webdriver_manager.core.os_manager import ChromeType
+import streamlit as st
+
 
 # Fetching a random quote from ZenQuotes API
 def get_quote():
