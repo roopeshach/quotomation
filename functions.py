@@ -203,3 +203,4 @@ def init_driver():
     )
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
+
