@@ -18,6 +18,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from PIL import Image, ImageDraw, ImageFont
 from webdriver_manager.core.os_manager import ChromeType
+from fake_useragent import UserAgent
 import streamlit as st
 
 
@@ -326,16 +327,21 @@ def init_driver():
     Returns:
     webdriver: Selenium WebDriver instance.
     """
+
+    # Generate a random User-Agent
+    ua = UserAgent()
+    user_agent = ua.random
+    print(f"Using User-Agent: {user_agent}")
+
+
     # Setting Chrome options for headless browser execution
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_options.add_argument("--mute-audio")
+    chrome_options.add_argument(f"user-agent={user_agent}")
 
-    # user agent
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
-    
    
 
     if not DEV_MODE:
