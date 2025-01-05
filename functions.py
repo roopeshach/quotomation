@@ -20,7 +20,8 @@ from PIL import Image, ImageDraw, ImageFont
 from webdriver_manager.core.os_manager import ChromeType
 from fake_useragent import UserAgent
 import streamlit as st
-
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
 
 VIDEO_METADATA_FILE = "video_metadata.json"
 DEV_MODE = False  # Set to False when deploying the app
@@ -115,7 +116,11 @@ def get_audio_data(text, driver, lang="in"):
             print(f"Attempt {attempt + 1}: Found audio source URL: {audio_src}")
 
             if "https://crikk.com/app/app/text-to-speech/" in audio_src:
-                audio_response = requests.get(audio_src)
+                session = requests.Session()
+                retries = Retry(total=5, backoff_factor=0.2)
+                session.mount("https://", HTTPAdapter(max_retries=retries))
+                audio_response = session.get(audio_src)
+                # audio_response = requests.get(audio_src, timeout=30)
                 print(f"Audio response status: {audio_response.status_code}")
                 if audio_response.status_code == 200:
                     return audio_response.content
@@ -338,7 +343,7 @@ def init_driver():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--mute-audio")
     chrome_options.add_argument(f"user-agent={user_agent}")
 
