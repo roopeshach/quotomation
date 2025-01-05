@@ -235,6 +235,14 @@ def list_files():
     st.title("List Generated Files")
 
     # Fetch mp3 and mp4 files in the current directory
+    # if output folder does not exist, create it
+    if not os.path.exists("output"):
+        os.makedirs("output")
+    if not os.path.exists("output/audios"):
+        os.makedirs("output/audios")
+    if not os.path.exists("output/videos"):
+        os.makedirs("output/videos")
+        
     audio_files = [f for f in os.listdir('output/audios') if f.endswith(".mp3")]
     video_files = [f for f in os.listdir("output/videos") if f.endswith(".mp4")]
 
