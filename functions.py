@@ -337,7 +337,7 @@ def init_driver():
 
         chrome_options.add_argument("--no-sandbox")  # Needed for some cloud environments
         chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents shared memory issues
-        
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
          # Dynamically fetch and configure the Chromium driver
         service = Service(
             ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
