@@ -116,10 +116,17 @@ def get_audio_data(text, driver, lang="in"):
             print(f"Attempt {attempt + 1}: Found audio source URL: {audio_src}")
 
             if "https://crikk.com/app/app/text-to-speech/" in audio_src:
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                }
                 session = requests.Session()
-                retries = Retry(total=5, backoff_factor=0.2)
+                retries = Retry(
+                    total=10,  # Increase the total retries
+                    backoff_factor=1,  # Increase backoff time between retries (e.g., 1s, 2s, 4s, ...)
+                    status_forcelist=[500, 502, 503, 504],  # Retry on specific HTTP errors
+                )
                 session.mount("https://", HTTPAdapter(max_retries=retries))
-                audio_response = session.get(audio_src)
+                audio_response = session.get(audio_src, headers=headers, timeout=30)
                 # audio_response = requests.get(audio_src, timeout=30)
                 print(f"Audio response status: {audio_response.status_code}")
                 if audio_response.status_code == 200:
