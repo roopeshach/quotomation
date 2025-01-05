@@ -324,7 +324,7 @@ def delete_file(file_path):
     return False
 
 
-@st.cache_resource
+# @st.cache_resource
 def init_driver():
     """
     Initialize a Selenium WebDriver instance.
