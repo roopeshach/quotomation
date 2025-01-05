@@ -165,6 +165,7 @@ def merge_audio(tts_audio_path, background_audio_dir="audios", output_dir="outpu
 
     background_files = [f for f in os.listdir(background_audio_dir) if f.endswith(".mp3")]
     if not background_files:
+        # display error message
         return None
 
     background_audio_path = os.path.join(background_audio_dir, random.choice(background_files))
@@ -331,6 +332,10 @@ def init_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_options.add_argument("--mute-audio")
+
+    # user agent
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
+    
    
 
     if not DEV_MODE:
