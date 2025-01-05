@@ -22,10 +22,22 @@ import streamlit as st
 
 
 VIDEO_METADATA_FILE = "video_metadata.json"
-DEV_MODE = True  # Set to False when deploying the app
+DEV_MODE = False  # Set to False when deploying the app
 
 # Fetching a random quote from ZenQuotes API
 def get_quote():
+    """
+    Fetch a random quote from ZenQuotes API.
+
+    Features:
+    - Fetches a random quote and its author.
+
+    Parameters:
+    None
+
+    Returns:
+    tuple: (quote, author) if successful, (None, None) otherwise.
+    """
     url = "https://zenquotes.io/api/random"
     response = requests.get(url)
     if response.status_code == 200:
@@ -36,11 +48,38 @@ def get_quote():
 
 # Translating the quote to Hindi
 def translate_to_hindi(text):
+    """
+    Translate English text to Hindi.
+
+    Features:
+    - Uses EngtoHindi library to translate text.
+
+    Parameters:
+    text (str): The text to be translated.
+
+    Returns:
+    str: Translated text in Hindi.
+    """
     res = EngtoHindi(text)
     return res.convert
 
 # Function to get audio from the text-to-speech service
 def get_audio_data(text, driver, lang="in"):
+    """
+    Get audio data from a text-to-speech service.
+
+    Features:
+    - Uses Selenium to interact with a TTS service.
+    - Fetches audio data for the given text.
+
+    Parameters:
+    text (str): The text to be converted to audio.
+    driver (webdriver): Selenium WebDriver instance.
+    lang (str): Language code (default is "in" for Hindi).
+
+    Returns:
+    bytes: Audio data if successful, None otherwise.
+    """
     if lang == "in":
         driver.get("https://crikk.com/text-to-speech/hindi/")
     else:
@@ -87,12 +126,40 @@ def get_audio_data(text, driver, lang="in"):
 
 # Save the audio data to a file (MP3)
 def save_audio_to_mp3(audio_data, filename):
+    """
+    Save audio data to an MP3 file.
+
+    Features:
+    - Writes audio data to a specified file.
+
+    Parameters:
+    audio_data (bytes): The audio data to be saved.
+    filename (str): The name of the file to save the audio data.
+
+    Returns:
+    None
+    """
     with open(filename, "wb") as audio_file:
         audio_file.write(audio_data)
 
 
 # Merge TTS audio with background music
 def merge_audio(tts_audio_path, background_audio_dir="audios", output_dir="output/audios"):
+    """
+    Merge TTS audio with background music.
+
+    Features:
+    - Combines TTS audio with a randomly selected background music track.
+    - Adjusts the volume of the background music.
+
+    Parameters:
+    tts_audio_path (str): Path to the TTS audio file.
+    background_audio_dir (str): Directory containing background music files.
+    output_dir (str): Directory to save the merged audio file.
+
+    Returns:
+    str: Path to the merged audio file if successful, None otherwise.
+    """
     os.makedirs(output_dir, exist_ok=True)
     tts_audio = AudioSegment.from_mp3(tts_audio_path)
 
@@ -117,6 +184,20 @@ def merge_audio(tts_audio_path, background_audio_dir="audios", output_dir="outpu
 
 
 def create_caption_image(text, size, font_path='arial.ttf'):
+    """
+    Create an image with text captions.
+
+    Features:
+    - Generates an image with centered text.
+
+    Parameters:
+    text (str): The text to be displayed on the image.
+    size (tuple): Size of the image (width, height).
+    font_path (str): Path to the font file (default is 'arial.ttf').
+
+    Returns:
+    Image: PIL Image object with the text.
+    """
     # Create an image with the desired size and transparent background
     img = Image.new('RGBA', size, (0, 0, 0, 0))  # RGBA for transparency
     draw = ImageDraw.Draw(img)
@@ -139,6 +220,22 @@ def create_caption_image(text, size, font_path='arial.ttf'):
     return img
 
 def create_video_with_audio(video_path, audio_path, output_path, captions_texts):
+    """
+    Create a video with synchronized audio and captions.
+
+    Features:
+    - Combines video and audio files.
+    - Adds text captions to the video.
+
+    Parameters:
+    video_path (str): Path to the video file.
+    audio_path (str): Path to the audio file.
+    output_path (str): Path to save the final video.
+    captions_texts (list): List of text captions to be added to the video.
+
+    Returns:
+    str: Path to the final video file.
+    """
     video_clip = VideoFileClip(video_path)
     audio_clip = AudioFileClip(audio_path)
 
@@ -178,11 +275,35 @@ def create_video_with_audio(video_path, audio_path, output_path, captions_texts)
 
 # Function to get today's date in YYYY-MM-DD format
 def get_today_date():
+    """
+    Get today's date in YYYY-MM-DD format.
+
+    Features:
+    - Fetches the current date.
+
+    Parameters:
+    None
+
+    Returns:
+    str: Today's date in YYYY-MM-DD format.
+    """
     return datetime.now().strftime("%Y-%m-%d")
 
 
 # Function to delete a file
 def delete_file(file_path):
+    """
+    Delete a specified file.
+
+    Features:
+    - Deletes the file if it exists.
+
+    Parameters:
+    file_path (str): Path to the file to be deleted.
+
+    Returns:
+    bool: True if the file was deleted, False otherwise.
+    """
     if os.path.exists(file_path):
         os.remove(file_path)
         return True
@@ -191,6 +312,19 @@ def delete_file(file_path):
 
 @st.cache_resource
 def init_driver():
+    """
+    Initialize a Selenium WebDriver instance.
+
+    Features:
+    - Configures Chrome options for headless execution.
+    - Dynamically fetches and configures the Chromium driver.
+
+    Parameters:
+    None
+
+    Returns:
+    webdriver: Selenium WebDriver instance.
+    """
     # Setting Chrome options for headless browser execution
     chrome_options = Options()
     chrome_options.add_argument("--headless")
@@ -221,6 +355,19 @@ def init_driver():
 
 # Function to load or initialize the video metadata
 def load_video_metadata():
+    """
+    Load or initialize video metadata.
+
+    Features:
+    - Loads metadata from a JSON file.
+    - Initializes an empty dictionary if the file does not exist.
+
+    Parameters:
+    None
+
+    Returns:
+    dict: Video metadata.
+    """
     if os.path.exists(VIDEO_METADATA_FILE):
         with open(VIDEO_METADATA_FILE, "r") as f:
             return json.load(f)
@@ -228,11 +375,37 @@ def load_video_metadata():
 
 # Function to save video metadata to the JSON file
 def save_video_metadata(metadata):
+    """
+    Save video metadata to a JSON file.
+
+    Features:
+    - Writes metadata to a specified JSON file.
+
+    Parameters:
+    metadata (dict): The metadata to be saved.
+
+    Returns:
+    None
+    """
     with open(VIDEO_METADATA_FILE, "w") as f:
         json.dump(metadata, f, indent=4)
 
 # Function to save audio metadata
 def save_audio_metadata(metadata, metadata_file="audio_metadata.json"):
+    """
+    Save audio metadata to a JSON file.
+
+    Features:
+    - Updates existing metadata with new data.
+    - Writes metadata to a specified JSON file.
+
+    Parameters:
+    metadata (dict): The metadata to be saved.
+    metadata_file (str): The name of the file to save the metadata (default is "audio_metadata.json").
+
+    Returns:
+    None
+    """
     if os.path.exists(metadata_file):
         with open(metadata_file, "r") as f:
             existing_metadata = json.load(f)
