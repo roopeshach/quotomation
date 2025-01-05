@@ -21,6 +21,9 @@ from webdriver_manager.core.os_manager import ChromeType
 import streamlit as st
 
 
+VIDEO_METADATA_FILE = "video_metadata.json"
+DEV_MODE = True  # Set to False when deploying the app
+
 # Fetching a random quote from ZenQuotes API
 def get_quote():
     url = "https://zenquotes.io/api/random"
@@ -194,19 +197,27 @@ def init_driver():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920x1080")
     chrome_options.add_argument("--mute-audio")
-    chrome_options.add_argument("--no-sandbox")  # Needed for some cloud environments
-    chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents shared memory issues
+   
 
-    # Dynamically fetch and configure the Chromium driver
-    service = Service(
-        ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-    )
+    if not DEV_MODE:
+
+        chrome_options.add_argument("--no-sandbox")  # Needed for some cloud environments
+        chrome_options.add_argument("--disable-dev-shm-usage")  # Prevents shared memory issues
+        
+         # Dynamically fetch and configure the Chromium driver
+        service = Service(
+            ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+        )
+
+    else:
+        service = Service(ChromeDriverManager().install())
+
+
     driver = webdriver.Chrome(service=service, options=chrome_options)
     return driver
 
 
 
-VIDEO_METADATA_FILE = "video_metadata.json"
 
 # Function to load or initialize the video metadata
 def load_video_metadata():
@@ -219,3 +230,16 @@ def load_video_metadata():
 def save_video_metadata(metadata):
     with open(VIDEO_METADATA_FILE, "w") as f:
         json.dump(metadata, f, indent=4)
+
+# Function to save audio metadata
+def save_audio_metadata(metadata, metadata_file="audio_metadata.json"):
+    if os.path.exists(metadata_file):
+        with open(metadata_file, "r") as f:
+            existing_metadata = json.load(f)
+    else:
+        existing_metadata = {}
+
+    existing_metadata.update(metadata)
+
+    with open(metadata_file, "w") as f:
+        json.dump(existing_metadata, f, indent=4)
