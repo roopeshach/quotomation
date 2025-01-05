@@ -22,7 +22,7 @@ import streamlit as st
 
 
 VIDEO_METADATA_FILE = "video_metadata.json"
-DEV_MODE = False  # Set to False when deploying the app
+DEV_MODE = True  # Set to False when deploying the app
 
 # Fetching a random quote from ZenQuotes API
 def get_quote():
@@ -246,23 +246,23 @@ def create_video_with_audio(video_path, audio_path, output_path, captions_texts)
     text_clips = []
     start_time = 0  # Start time for captions
 
-    # Generate caption images and sync them with the audio
-    for i, text in enumerate(captions_texts):
-        # Create caption image with PIL
-        caption_image = create_caption_image(text, video_clip.size)
+    # # Generate caption images and sync them with the audio
+    # for i, text in enumerate(captions_texts):
+    #     # Create caption image with PIL
+    #     caption_image = create_caption_image(text, video_clip.size)
 
-        # Convert the PIL image to a numpy array for MoviePy
-        caption_image_np = np.array(caption_image)
+    #     # Convert the PIL image to a numpy array for MoviePy
+    #     caption_image_np = np.array(caption_image)
 
-        # Convert the numpy array to a MoviePy ImageClip
-        caption_clip = ImageClip(caption_image_np, duration=3)  # Adjust duration per caption (default 3 sec)
-        caption_clip = caption_clip.set_position('center').set_start(start_time)
+    #     # Convert the numpy array to a MoviePy ImageClip
+    #     caption_clip = ImageClip(caption_image_np, duration=3)  # Adjust duration per caption (default 3 sec)
+    #     caption_clip = caption_clip.set_position('center').set_start(start_time)
 
-        # Add to the list of text clips
-        text_clips.append(caption_clip)
+    #     # Add to the list of text clips
+    #     text_clips.append(caption_clip)
 
-        # Increment the start time for the next caption
-        start_time += 3  # Adjust this for the interval between captions
+    #     # Increment the start time for the next caption
+    #     start_time += 3  # Adjust this for the interval between captions
 
     # Combine the video and the text clips into a final video
     final_clip = CompositeVideoClip([video_clip] + text_clips)

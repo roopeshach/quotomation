@@ -355,7 +355,14 @@ def list_audio_templates():
     search_query = st.text_input("Search Audio Templates", placeholder="Type to search audio files...")
 
     # List audio templates
+    # if audios folder does not exist, create it
+    if not os.path.exists("audios"):
+        os.makedirs("audios")
+
     audio_files = [f for f in os.listdir("audios") if f.endswith(".mp3")]
+
+
+
     if search_query:
         audio_files = [f for f in audio_files if search_query.lower() in f.lower()]
 
@@ -396,6 +403,9 @@ def list_video_templates():
     search_query = st.text_input("Search Video Templates", placeholder="Type to search video files...")
 
     # List video templates
+    # if videos folder does not exist, create it
+    if not os.path.exists("videos"):
+        os.makedirs("videos")
     video_files = [f for f in os.listdir("videos") if f.endswith(".mp4")]
     if search_query:
         video_files = [f for f in video_files if search_query.lower() in f.lower()]
