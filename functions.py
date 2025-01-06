@@ -253,30 +253,16 @@ def create_video_with_audio(video_path, audio_path, output_path, captions_texts)
     video_clip = VideoFileClip(video_path)
     audio_clip = AudioFileClip(audio_path)
 
-    # Set the video clip to match the duration of the audio clip
-    video_clip = video_clip.subclip(0, min(video_clip.duration, audio_clip.duration))
+    # Loop the video to match the duration of the audio clip
+    video_duration = video_clip.duration
+    audio_duration = audio_clip.duration
+    if video_duration < audio_duration:
+        video_clip = video_clip.loop(duration=audio_duration)
+
     video_clip = video_clip.set_audio(audio_clip)
 
     text_clips = []
-    start_time = 0  # Start time for captions
 
-    # # Generate caption images and sync them with the audio
-    # for i, text in enumerate(captions_texts):
-    #     # Create caption image with PIL
-    #     caption_image = create_caption_image(text, video_clip.size)
-
-    #     # Convert the PIL image to a numpy array for MoviePy
-    #     caption_image_np = np.array(caption_image)
-
-    #     # Convert the numpy array to a MoviePy ImageClip
-    #     caption_clip = ImageClip(caption_image_np, duration=3)  # Adjust duration per caption (default 3 sec)
-    #     caption_clip = caption_clip.set_position('center').set_start(start_time)
-
-    #     # Add to the list of text clips
-    #     text_clips.append(caption_clip)
-
-    #     # Increment the start time for the next caption
-    #     start_time += 3  # Adjust this for the interval between captions
 
     # Combine the video and the text clips into a final video
     final_clip = CompositeVideoClip([video_clip] + text_clips)
