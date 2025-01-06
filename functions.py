@@ -24,7 +24,7 @@ from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 VIDEO_METADATA_FILE = "video_metadata.json"
-DEV_MODE = False  # Set to False when deploying the app
+DEV_MODE = True  # Set to False when deploying the app
 
 # Fetching a random quote from ZenQuotes API
 def get_quote():
@@ -196,42 +196,6 @@ def merge_audio(tts_audio_path, background_audio_dir="audios", output_dir="outpu
     final_audio.export(final_audio_path, format="mp3")
     return final_audio_path
 
-
-def create_caption_image(text, size, font_path='arial.ttf'):
-    """
-    Create an image with text captions.
-
-    Features:
-    - Generates an image with centered text.
-
-    Parameters:
-    text (str): The text to be displayed on the image.
-    size (tuple): Size of the image (width, height).
-    font_path (str): Path to the font file (default is 'arial.ttf').
-
-    Returns:
-    Image: PIL Image object with the text.
-    """
-    # Create an image with the desired size and transparent background
-    img = Image.new('RGBA', size, (0, 0, 0, 0))  # RGBA for transparency
-    draw = ImageDraw.Draw(img)
-    
-    # Load font and set size
-    try:
-        font = ImageFont.truetype(font_path, 50)  # Adjust the font size as needed
-    except IOError:
-        font = ImageFont.load_default()  # Fallback to default font if TTF not found
-
-    # Get text bounding box and calculate positioning (centered text)
-    bbox = draw.textbbox((0, 0), text, font=font)  # Get bounding box for the text
-    text_width = bbox[2] - bbox[0]  # Width of the text
-    text_height = bbox[3] - bbox[1]  # Height of the text
-    position = ((size[0] - text_width) / 2, (size[1] - text_height) / 2)
-    
-    # Add text to image
-    draw.text(position, text, font=font, fill='white')  # White text
-    
-    return img
 
 def create_video_with_audio(video_path, audio_path, output_path, captions_texts):
     """
