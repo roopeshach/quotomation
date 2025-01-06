@@ -24,7 +24,7 @@ from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 
 VIDEO_METADATA_FILE = "video_metadata.json"
-DEV_MODE = True  # Set to False when deploying the app
+DEV_MODE = False  # Set to False when deploying the app
 
 # Fetching a random quote from ZenQuotes API
 def get_quote():

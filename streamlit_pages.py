@@ -22,7 +22,6 @@ from functions import (
 def generate_audio():
     """
     Generate audio from quotes and save metadata.
-
     Features:
     - Fetches quotes and translates them to Hindi.
     - Generates TTS audio for the quotes.
@@ -287,6 +286,11 @@ def list_files():
                 st.write(f"**Description**: {metadata.get('description', 'N/A')}")
                 st.write(f"**Hashtags**: {', '.join(metadata.get('hashtags', []))}")
                 st.write(f"**Date Created**: {metadata.get('date_created', 'N/A')}")
+                st.write(f"**Quote**: {video_metadata.get('quote', 'N/A')}")
+                st.write(f"**Author**: {video_metadata.get('author', 'N/A')}")
+                st.write(f"**Hindi Quote**: {video_metadata.get('hindi_quote', 'N/A')}")
+                st.write(f"**TTS Text**: {video_metadata.get('tts_text', 'N/A')}")
+                
             else:
                 st.write("No metadata available.")
 
